@@ -2,8 +2,11 @@ import { createSessionClient, SESSION_COOKIE } from "$lib/server/appwrite";
 import type { RequestHandler } from "@sveltejs/kit";
 
 export const POST: RequestHandler = async ({ request, cookies, locals }) => {
-    const { account } = createSessionClient(cookies);
-    await account.deleteSession("current");
+    try {
+        const { account } = createSessionClient(cookies);
+        await account.deleteSession("current");
+    } catch {}
+
     cookies.delete(SESSION_COOKIE, { path: "/" });
     locals.user = undefined;
 
