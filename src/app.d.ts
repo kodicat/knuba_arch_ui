@@ -1,8 +1,8 @@
 // See https://svelte.dev/docs/kit/types#app.d.ts
 // for information about these interfaces
-import Models from 'svelte';
+import type { Models } from 'node-appwrite';
 
-type User = Models.User<Models.Preferences> | undefined;
+export type User = Models.User<Models.Preferences> | undefined;
 
 declare global {
     namespace App {

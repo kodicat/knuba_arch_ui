@@ -4,31 +4,31 @@ import { ID, OAuthProvider } from "node-appwrite";
 import type { Actions } from './$types';
 
 export const actions: Actions = {
-  signup: async ({ request, cookies }) => {
-    const form = await request.formData();
-    const name = form.get("name");
-    const email = form.get("email");
-    const password = form.get("password");
+    signup: async ({ request, cookies }) => {
+      const form = await request.formData();
+      const name = form.get("name");
+      const email = form.get("email");
+      const password = form.get("password");
 
-    if (!email) {
-        return fail(400, { email, name, missing: true, errorMessage: "Пошта обов'язкова"});
-    }
-    if (!password) {
-        return fail(400, { email, name, missing: true, errorMessage: "Пароль обов'язковий"});
-    }
+      if (!email) {
+          return fail(400, { email, name, error: true, message: "Пошта обов'язкова"});
+      }
+      if (!password) {
+          return fail(400, { email, name, error: true, message: "Пароль обов'язковий"});
+      }
 
-    const { account } = createAdminClient();
+      const { account } = createAdminClient();
 
-    await account.create(ID.unique(), email.toString(), password.toString(), name?.toString());
-    const session = await account.createEmailPasswordSession(email.toString(), password.toString());
+      await account.create(ID.unique(), email.toString(), password.toString(), name?.toString());
+      const session = await account.createEmailPasswordSession(email.toString(), password.toString());
 
-    cookies.set(SESSION_COOKIE, session.secret, {
-      sameSite: "strict",
-      expires: new Date(session.expire),
-      secure: true,
-      path: "/",
-    });
+      cookies.set(SESSION_COOKIE, session.secret, {
+        sameSite: "strict",
+        expires: new Date(session.expire),
+        secure: true,
+        path: "/",
+      });
 
-    redirect(302, "/account");
-  },
+      redirect(302, "/account");
+    },
 };
