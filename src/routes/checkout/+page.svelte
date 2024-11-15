@@ -2,6 +2,9 @@
     import { goto } from '$app/navigation';
     import type { CartProduct } from '$lib/types';
     import { onMount } from 'svelte';
+    import type { ActionData } from './$types';
+
+    let { form }: { form: ActionData } = $props();
 
     let cartProducts = $state<CartProduct[]>([]);
     let name = $state<string>('');
@@ -23,24 +26,18 @@
         ).toFixed(2);
     });
 
-    async function confirmOrder() {
-        if (cartProducts.length === 0) {
-            return;
+    $effect(() => {
+        if (form?.success) {
+            const cartParam = encodeURIComponent(JSON.stringify(cartProducts));
+            localStorage.removeItem('cart');
+            goto(`/order-success?cart=${cartParam}`);
         }
-        if (!phone || !address) {
-            errorMessage = 'Введіть обовязкові поля';
-            return;
-        }
-
-        localStorage.removeItem('cart');
-        const cartParam = encodeURIComponent(JSON.stringify(cartProducts));
-        goto(`/order-success?cart=${cartParam}`);
-    }
+    });
 </script>
 
 <h1 class="text-3xl font-semibold mb-6">Оформлення замовлення</h1>
 
-<form method="POST" action="/checkout" onsubmit={() => confirmOrder()}>
+<form method="POST" action="/checkout">
     <input type="hidden" name="cartProducts" value={JSON.stringify(cartProducts)} />
     <input type="hidden" name="totalAmount" value={totalAmount} />
     <div class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
