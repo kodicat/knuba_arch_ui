@@ -30,8 +30,6 @@ export const load: PageServerLoad = async ({ locals }) => {
             cartProducts: JSON.parse(x.cartProducts),
             createdAt: x.$createdAt
         }))
- 
-        console.log(orders);
 
         return { orders: orders };
     } catch (error) {
