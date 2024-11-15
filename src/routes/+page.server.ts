@@ -13,8 +13,6 @@ export const load: PageServerLoad = async () => {
         PUBLIC_APPWRITE_PRODUCTS_COLLECTION
     );
 
-    console.log(response);
-
     const products = response.documents.map(x => ({
         id: x.$id,
         title: x.title,

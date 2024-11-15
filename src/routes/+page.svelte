@@ -3,6 +3,7 @@
     import CartItem from './cart-item.svelte';
     import ShoppingCart from 'phosphor-svelte/lib/ShoppingCart';
     import X from 'phosphor-svelte/lib/X';
+    import { goto } from '$app/navigation';
 
     let { data } = $props();
 
@@ -61,6 +62,14 @@
             cartLabel = 'Кошик (' + cartStats.quantity + ')';
         }
     });
+
+    function checkout() {
+        if (cartProducts.length === 0) {
+            return;
+        }
+
+        goto("/checkout");
+    }
 </script>
 
 <div class="fixed left-0 top-10 flex h-12 w-full items-center bg-gray-700 p-4">
@@ -89,13 +98,23 @@
                     <div class="mt-4 border-gray-200 pt-4">
                         <p class="text-lg font-semibold">Загалом: {cartStats.total.toFixed(2)} грн.</p>
                     </div>
+                    {#if !isEmptyCart}
+                    <div class="mt-4">
+                        <button
+                            onclick={checkout}
+                            class="w-full rounded-lg bg-gray-500 text-white py-2 hover:bg-gray-600"
+                        >
+                            Оформити замавлення
+                        </button>
+                    </div>
+                    {/if}
                 </div>
             </div>
         {/if}
     </div>
 </div>
 
-<div class=" mt-12 grid grid-cols-1 gap-6 bg-gray-100 p-8 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+<div class="mt-12 grid grid-cols-1 gap-6 bg-gray-100 p-8 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
     {#each data.products as product}
         <div class="overflow-hidden rounded-xl bg-white shadow-lg">
             <img src={product.thumbnail} alt={product.title} class="h-48 w-full object-cover" />
