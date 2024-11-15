@@ -104,7 +104,7 @@
                     {product.title}
                 </p>
                 <div class="flex items-center justify-between">
-                    <p class="text-xl font-bold">${product.price}</p>
+                    <p class="text-xl font-bold">{product.price} грн.</p>
                     <button
                         class="rounded-full bg-gray-600 px-4 py-2 text-white transition-colors duration-300 hover:bg-gray-700"
                         onclick={() => addToCart(product)}

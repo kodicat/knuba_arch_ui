@@ -21,7 +21,7 @@
         />
         <div>
             <p class="font-medium">{cartProduct.product.title}</p>
-            <p class="text-sm">${cartProduct.product.price} each</p>
+            <p class="text-sm">по {cartProduct.product.price} грн.</p>
         </div>
     </div>
     <div class="flex items-center">
