@@ -24,8 +24,6 @@ export const actions: Actions = {
             const { databases } = createAnonDatabaseClient();
             const order = await databases.createDocument(PUBLIC_APPWRITE_DATABASE, PUBLIC_APPWRITE_ORDERS_COLLECTION, 'unique()', orderData);
 
-            console.log(order);
-
             return { success: true, orderId: order.$id };
         } catch (error) {
             console.error('Failed to save order:', error);
