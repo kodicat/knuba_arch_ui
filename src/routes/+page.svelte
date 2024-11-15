@@ -10,6 +10,14 @@
     let cartOpen = $state(false);
     let cartProducts = $state<CartProduct[]>([]);
 
+    // should be browser
+    if (typeof window !== 'undefined') {
+        const storedCart = localStorage.getItem('cart');
+        if (storedCart) {
+            cartProducts = JSON.parse(storedCart);
+        }
+    }
+
     const cartStats = $derived.by(() => {
         let quantity = 0;
         let total = 0;
@@ -67,6 +75,8 @@
         if (cartProducts.length === 0) {
             return;
         }
+
+        localStorage.setItem('cart', JSON.stringify(cartProducts));
 
         goto("/checkout");
     }
