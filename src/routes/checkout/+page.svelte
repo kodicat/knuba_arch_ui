@@ -3,6 +3,12 @@
     import type { CartProduct } from '$lib/types';
 
     let cartProducts = $state<CartProduct[]>([]);
+    let name = $state<string>('');
+    let phone = $state<string>('');
+    let address = $state<string>('');
+
+
+    let errorMessage = $state<string>('');
 
     // should be browser
     if (typeof window !== 'undefined') {
@@ -12,9 +18,20 @@
         }
     }
 
-    // Checkout logic
     function confirmOrder() {
-        goto('/order-success');
+        if (cartProducts.length === 0) {
+            return;
+        }
+        if (!phone || !address) {
+            errorMessage = 'Введіть обовязкові поля';
+            return;
+        }
+        // save in db
+
+        localStorage.removeItem('cart');
+
+        const cartParam = encodeURIComponent(JSON.stringify(cartProducts));
+        goto(`/order-success?cart=${cartParam}`);
     }
 </script>
 
@@ -35,9 +52,49 @@
     {/each}
 </div>
 
+<div class="mt-6 space-y-4">
+    <div>
+        <label for="phone" class="px-2 py-2 block text-gray-700 font-medium">Ім'я</label>
+        <input
+            type="tel"
+            id="phone"
+            bind:value={name}
+            placeholder="Ім'я замовника"
+            class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-transparent"
+            required
+        />
+    </div>
+
+    <div>
+        <label for="phone" class="px-2 py-2 block text-gray-700 font-medium">Телефон *</label>
+        <input
+            type="tel"
+            id="phone"
+            bind:value={phone}
+            placeholder="Введіть телефон для підтвердження замовлення"
+            class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-transparent"
+            required
+        />
+    </div>
+    
+    <div>
+        <label for="address" class="px-2 py-2 block text-gray-700 font-medium">Адреса доставки *</label>
+        <input
+            type="text"
+            id="address"
+            bind:value={address}
+            placeholder="Повна адреса доставки, місто, вулиця, будинок"
+            class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-transparent"
+            required
+        />
+    </div>
+</div>
+
+{#if errorMessage}<p class="text-red-500 text-sm mt-2">{errorMessage}</p>{/if}
+
 <div class="mt-6 text-lg font-semibold">
     <div class="flex justify-between mb-4">
-        <span>Total:</span>
+        <span>Загалом до оплати:</span>
         <span class="text-xl">{cartProducts.reduce((total, product) => total + (product.product.price * product.quantity), 0).toFixed(2)} грн.</span>
     </div>
 
